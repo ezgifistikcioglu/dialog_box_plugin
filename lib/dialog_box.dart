@@ -17,24 +17,27 @@ class DialogBox {
     return alert;
   }
 
-  static Future<String> simpleAlert() async {
-    final String simpleAlert = await _channel.invokeMethod('simpleAlert');
+  static Future<String> simpleAlert(AlertDialogRequest request) async {
+    final String simpleAlert =
+        await _channel.invokeMethod('simpleAlertWithCancel', request.toMap());
     return simpleAlert;
   }
 
-  static Future<String> withItems() async {
-    final String withItems = await _channel.invokeMethod('withItems');
+  static Future<String> withItems(AlertDialogRequest request) async {
+    final String withItems =
+        await _channel.invokeMethod('withItems', request.toMap());
     return withItems;
   }
 
-  static Future<String> withMultiChoiceItems() async {
+  static Future<String> withMultiChoiceItems(AlertDialogRequest request) async {
     final String withMultiChoiceItems =
-        await _channel.invokeMethod('withMultiChoiceItems');
+        await _channel.invokeMethod('withMultiChoiceItems', request.toMap());
     return withMultiChoiceItems;
   }
 
-  static Future<String> withEditText() async {
-    final String withEditText = await _channel.invokeMethod('withEditText');
+  static Future<String> withEditText(AlertDialogRequest request) async {
+    final String withEditText =
+        await _channel.invokeMethod('withEditText', request.toMap());
     return withEditText;
   }
 
@@ -43,13 +46,15 @@ class DialogBox {
     return withImageView;
   }
 
-  static Future<String> withSeekBar() async {
-    final String withSeekBar = await _channel.invokeMethod('withSeekBar');
+  static Future<String> withSeekBar(AlertDialogRequest request) async {
+    final String withSeekBar =
+        await _channel.invokeMethod('withSeekBar', request.toMap());
     return withSeekBar;
   }
 
-  static Future<String> withRatingBar() async {
-    final String withRatingBar = await _channel.invokeMethod('withRatingBar');
+  static Future<String> withRatingBar(AlertDialogRequest request) async {
+    final String withRatingBar =
+        await _channel.invokeMethod('withRatingBar', request.toMap());
     return withRatingBar;
   }
 }

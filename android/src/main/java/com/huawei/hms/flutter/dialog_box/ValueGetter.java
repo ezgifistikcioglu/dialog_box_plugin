@@ -46,4 +46,12 @@ public class ValueGetter {
             throw new IllegalArgumentException();
         }
     }
+
+    public static String[] itemListToArray(List<String> additionalScanTypes) {
+        String[] scanTypesIntArray = new String[additionalScanTypes.size()];
+        for (int i = 0; i < additionalScanTypes.size(); i++) {
+            scanTypesIntArray[i] = additionalScanTypes.get(i);
+        }
+        return scanTypesIntArray;
+    }
 }
