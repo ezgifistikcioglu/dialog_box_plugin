@@ -45,6 +45,7 @@ class _MyAppState extends State<MyApp> {
     try {
       AlertDialogRequest request = AlertDialogRequest(
           content: "showAlertDialog",
+          subTextColor: Colors.red,
           subText: "Alert Dialog show a message",
           toastText: "YES was clicked",
           okButtonText: "YES");
@@ -81,6 +82,7 @@ class _MyAppState extends State<MyApp> {
           content: "with Items Alert",
           okButtonText: "K",
           noButtonText: "Dot",
+          toastText: "YES was clicked",
           itemList: ["a", "b", "c"]);
       response = await DialogBox.withItems(request);
       setState(() {

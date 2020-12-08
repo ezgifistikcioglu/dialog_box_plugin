@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,29 +37,50 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
     public DialogBoxMethodCallHandler(final Activity activity){
         this.mActivity = activity;
     }
-
     private  void alertDialog(MethodCall methodCall, MethodChannel.Result result){
         //Arguments from call
         String text = ValueGetter.getString("content", methodCall);
         String subText = ValueGetter.getString("subText", methodCall);
         String okButtonText = ValueGetter.getString("okButtonText", methodCall);
         final String toastText = ValueGetter.getString("toastText", methodCall);
+        int backgroundColor = ValueGetter.getInt("backgroundColor", methodCall);
+        int setTextColor = ValueGetter.getInt("setTextColor", methodCall);
+        int subTextColor = ValueGetter.getInt("subTextColor", methodCall);
+        int textSize = ValueGetter.getInt("textSize", methodCall);
+        int messageTextSize = ValueGetter.getInt("messageTextSize", methodCall);
         try {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this.mActivity);
-            dialog.setTitle(text);
-            dialog.setMessage(subText);
-            dialog.setPositiveButton(okButtonText,  new DialogInterface.OnClickListener() {
+            TextView mTitle = new TextView(this.mActivity);
+            mTitle.setText(text);
+            mTitle.setGravity(Gravity.CENTER_HORIZONTAL);
+            mTitle.setTextSize(textSize);
+            mTitle.setTextColor(setTextColor);
+
+            AlertDialog.Builder builder  = new AlertDialog.Builder(this.mActivity);
+            builder.setCustomTitle(mTitle);
+            builder.setMessage(subText);
+            builder.setPositiveButton(okButtonText,  new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogInterface, int which) {
                     Toast.makeText(mActivity,
                         toastText,
                         Toast.LENGTH_SHORT).show();
                 }
             });
-            dialog.show();
+            AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(dialog -> {
+                //The following is to style dialog message
+                TextView message = alertDialog.findViewById(android.R.id.message);
+                if (message != null) {
+                    message.setTextSize(messageTextSize);
+                    message.setTextColor(subTextColor);
+                }
+            });
+            alertDialog.show();
+
         }catch (Exception e){
             result.success(e.getMessage());
         }
     }
+
 
     public void simpleAlert(MethodCall methodCall, MethodChannel.Result result) {
         //Arguments from call
@@ -95,14 +118,21 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
         //Arguments from call
         String text = ValueGetter.getString("content", methodCall);
         String okButtonText = ValueGetter.getString("okButtonText", methodCall);
+        int okButtonColor = ValueGetter.getInt("okButtonColor", methodCall);
+        int noButtonColor = ValueGetter.getInt("noButtonColor", methodCall);
+        int neutralButtonColor = ValueGetter.getInt("neutralButtonColor", methodCall);
         String noButtonText = ValueGetter.getString("noButtonText", methodCall);
+        String neutralButtonText = ValueGetter.getString("neutralButtonText", methodCall);
+        final String toastText = ValueGetter.getString("toastText", methodCall);
         int backgroundColor = ValueGetter.getInt("backgroundColor", methodCall);
         int setTextColor = ValueGetter.getInt("setTextColor", methodCall);
+        int setNoTextColor = ValueGetter.getInt("setNoTextColor", methodCall);
+        int setNeutralTextColor = ValueGetter.getInt("setNeutralTextColor", methodCall);
         ArrayList<String> itemList = methodCall.argument("itemList");
 
         try {
             //List<String> to String[]
-          String[] itemListStringArray = null;
+            String[] itemListStringArray = null;
             if (itemList != null) {
                 itemListStringArray = ValueGetter.itemListToArray(itemList);
             }
@@ -118,9 +148,15 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
                     }
                 });
 
-            builder.setPositiveButton(okButtonText, null);
+            builder.setPositiveButton(okButtonText,   new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogInterface, int which) {
+                    Toast.makeText(mActivity,
+                        toastText,
+                        Toast.LENGTH_SHORT).show();
+                }
+            });
             builder.setNegativeButton(noButtonText, null);
-            builder.setNeutralButton("NEUTRAL", null);
+            builder.setNeutralButton(neutralButtonText, null);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 builder.setIcon(mActivity.getResources().getDrawable(android.R.drawable.ic_menu_call, mActivity.getTheme()));
                 builder.setIcon(mActivity.getResources().getDrawable(R.drawable.list, mActivity.getTheme()));
@@ -129,9 +165,17 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
 
             alertDialog.show();
 
-            Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-            button.setBackgroundColor(backgroundColor);
-            button.setTextColor(setTextColor);
+            Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            positiveButton.setBackgroundColor(okButtonColor);
+            positiveButton.setTextColor(setTextColor);
+
+           Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+           negativeButton.setBackgroundColor(noButtonColor);
+           negativeButton.setTextColor(setNoTextColor);
+
+           Button neutralButton = alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL);
+           neutralButton.setBackgroundColor(neutralButtonColor);
+           neutralButton.setTextColor(setNeutralTextColor);
         }catch (Exception e){
             result.success(e.getMessage());
         }
