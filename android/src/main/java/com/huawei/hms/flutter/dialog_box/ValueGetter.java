@@ -5,7 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.flutter.plugin.common.MethodCall;
 
 import java.util.List;
@@ -53,5 +54,14 @@ public class ValueGetter {
             scanTypesIntArray[i] = additionalScanTypes.get(i);
         }
         return scanTypesIntArray;
+    }
+
+    public static Bitmap bitmapForDecoders(MethodCall call) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String data = ValueGetter.getString("data", call);
+
+        //Build bitmap from data
+        byte[] parsed = gson.fromJson(data, byte[].class);
+        return BitmapFactory.decodeByteArray(parsed, 0, parsed.length);
     }
 }

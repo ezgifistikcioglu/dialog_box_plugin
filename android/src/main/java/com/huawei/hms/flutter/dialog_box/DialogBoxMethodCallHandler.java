@@ -5,7 +5,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
@@ -46,7 +50,9 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
         int backgroundColor = ValueGetter.getInt("backgroundColor", methodCall);
         int setTextColor = ValueGetter.getInt("setTextColor", methodCall);
         int subTextColor = ValueGetter.getInt("subTextColor", methodCall);
+        int okButtonColor = ValueGetter.getInt("okButtonColor", methodCall);
         int textSize = ValueGetter.getInt("textSize", methodCall);
+
         int messageTextSize = ValueGetter.getInt("messageTextSize", methodCall);
         try {
             TextView mTitle = new TextView(this.mActivity);
@@ -75,7 +81,9 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
                 }
             });
             alertDialog.show();
-
+            Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            positiveButton.setBackgroundColor(okButtonColor);
+            positiveButton.setTextColor(setTextColor);
         }catch (Exception e){
             result.success(e.getMessage());
         }
@@ -89,10 +97,24 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
         String okButtonText = ValueGetter.getString("okButtonText", methodCall);
         String noButtonText = ValueGetter.getString("noButtonText", methodCall);
         final String toastText = ValueGetter.getString("toastText", methodCall);
+        final String noToastText = ValueGetter.getString("noToastText", methodCall);
+        int okButtonColor = ValueGetter.getInt("okButtonColor", methodCall);
+        int noButtonColor = ValueGetter.getInt("noButtonColor", methodCall);
+        int setTextColor = ValueGetter.getInt("setTextColor", methodCall);
+        int setNoTextColor = ValueGetter.getInt("setNoTextColor", methodCall);
+        int textSize = ValueGetter.getInt("textSize", methodCall);
+        int messageTextSize = ValueGetter.getInt("messageTextSize", methodCall);
+        int subTextColor = ValueGetter.getInt("subTextColor", methodCall);
 
         try {
+            TextView mTitle = new TextView(this.mActivity);
+            mTitle.setText(text);
+            mTitle.setGravity(Gravity.NO_GRAVITY);
+            mTitle.setTextSize(textSize);
+            mTitle.setTextColor(setTextColor);
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this.mActivity);
-            builder.setTitle(text);
+            builder.setCustomTitle(mTitle);
             builder.setMessage(subText);
             builder.setPositiveButton(okButtonText,
                 new DialogInterface.OnClickListener() {
@@ -105,11 +127,29 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
             builder.setNegativeButton(noButtonText, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     Toast.makeText(mActivity,
-                        android.R.string.no, Toast.LENGTH_SHORT).show();
+                        noToastText, Toast.LENGTH_SHORT).show();
                 }
             });
             builder.setCancelable(false);
-            builder.show();
+            AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(dialog -> {
+                //The following is to style dialog message
+                TextView message = alertDialog.findViewById(android.R.id.message);
+                if (message != null) {
+                    message.setTextSize(messageTextSize);
+                    message.setTextColor(subTextColor);
+                }
+            });
+
+            alertDialog.show();
+
+            Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            positiveButton.setBackgroundColor(okButtonColor);
+            positiveButton.setTextColor(setTextColor);
+
+            Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            negativeButton.setBackgroundColor(noButtonColor);
+            negativeButton.setTextColor(setNoTextColor);
         }catch (Exception e){
             result.success(e.getMessage());
         }
@@ -123,7 +163,9 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
         int neutralButtonColor = ValueGetter.getInt("neutralButtonColor", methodCall);
         String noButtonText = ValueGetter.getString("noButtonText", methodCall);
         String neutralButtonText = ValueGetter.getString("neutralButtonText", methodCall);
+        final String noToastText = ValueGetter.getString("noToastText", methodCall);
         final String toastText = ValueGetter.getString("toastText", methodCall);
+        final String neutralToastText = ValueGetter.getString("neutralToastText", methodCall);
         int backgroundColor = ValueGetter.getInt("backgroundColor", methodCall);
         int setTextColor = ValueGetter.getInt("setTextColor", methodCall);
         int setNoTextColor = ValueGetter.getInt("setNoTextColor", methodCall);
@@ -155,8 +197,18 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
                         Toast.LENGTH_SHORT).show();
                 }
             });
-            builder.setNegativeButton(noButtonText, null);
-            builder.setNeutralButton(neutralButtonText, null);
+            builder.setNegativeButton(noButtonText, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(mActivity, noToastText, Toast.LENGTH_SHORT).show();
+            }
+            });
+            builder.setNeutralButton(neutralButtonText, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogInterface, int which) {
+                    Toast.makeText(mActivity,
+                        neutralToastText,
+                        Toast.LENGTH_SHORT).show();
+                }
+            });
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 builder.setIcon(mActivity.getResources().getDrawable(android.R.drawable.ic_menu_call, mActivity.getTheme()));
                 builder.setIcon(mActivity.getResources().getDrawable(R.drawable.list, mActivity.getTheme()));
@@ -186,6 +238,9 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
         String text = ValueGetter.getString("content", methodCall);
         String okButtonText = ValueGetter.getString("okButtonText", methodCall);
         ArrayList<String> itemList = methodCall.argument("itemList");
+        int okButtonColor = ValueGetter.getInt("okButtonColor", methodCall);
+        int setTextColor = ValueGetter.getInt("setTextColor", methodCall);
+        int textSize = ValueGetter.getInt("textSize", methodCall);
         final ArrayList<Integer> selectedList = new ArrayList<>();
 
         try {
@@ -194,10 +249,15 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
             if (itemList != null) {
                 itemListStringArray = ValueGetter.itemListToArray(itemList);
             }
+            TextView mTitle = new TextView(this.mActivity);
+            mTitle.setText(text);
+            mTitle.setGravity(Gravity.NO_GRAVITY);
+            mTitle.setTextSize(textSize);
+            mTitle.setTextColor(setTextColor);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
 
-            builder.setTitle(text); //This is list choice dialog box
+            builder.setCustomTitle(mTitle); //This is list choice dialog box
             builder.setMultiChoiceItems(itemListStringArray, null,
                 new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
@@ -224,8 +284,11 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
                     Toast.makeText(mActivity, "Items selected are: " + Arrays.toString(selectedStrings.toArray()), Toast.LENGTH_SHORT).show();
                 }
             });
-
-            builder.show();
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            positiveButton.setBackgroundColor(okButtonColor);
+            positiveButton.setTextColor(setTextColor);
         }catch (Exception e){
             result.success(e.getMessage());
         }
@@ -235,9 +298,18 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
         //Arguments from call
         String text = ValueGetter.getString("content", methodCall);
         String okButtonText = ValueGetter.getString("okButtonText", methodCall);
+        int okButtonColor = ValueGetter.getInt("okButtonColor", methodCall);
+        int setTextColor = ValueGetter.getInt("setTextColor", methodCall);
+        int textSize = ValueGetter.getInt("textSize", methodCall);
         try {
+            TextView mTitle = new TextView(this.mActivity);
+            mTitle.setText(text);
+            mTitle.setGravity(Gravity.NO_GRAVITY);
+            mTitle.setTextSize(textSize);
+            mTitle.setTextColor(setTextColor);
+
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-            builder.setTitle(text); //"With Edit Text"
+            builder.setCustomTitle(mTitle); //"With Edit Text"
 
             final EditText input = new EditText(this.mActivity);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -251,7 +323,11 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
                     Toast.makeText(mActivity, "Text entered is " + input.getText().toString(), Toast.LENGTH_SHORT).show();
                 }
             });
-            builder.show();
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            positiveButton.setBackgroundColor(okButtonColor);
+            positiveButton.setTextColor(setTextColor);
         }catch (Exception e){
             result.success(e.getMessage());
         }
@@ -259,15 +335,44 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
 
     public void withImageView(MethodCall methodCall, MethodChannel.Result result) {
         //Arguments from call
+        String text = ValueGetter.getString("content", methodCall);
         String okButtonText = ValueGetter.getString("okButtonText", methodCall);
+        int setTextColor = ValueGetter.getInt("setTextColor", methodCall);
+        int textSize = ValueGetter.getInt("textSize", methodCall);
+        final String toastText = ValueGetter.getString("toastText", methodCall);
+        int okButtonColor = ValueGetter.getInt("okButtonColor", methodCall);
+      //  Bitmap bitmap = ValueGetter.bitmapForDecoders(methodCall);
 
         try {
+            TextView mTitle = new TextView(this.mActivity);
+            mTitle.setText(text);
+            mTitle.setGravity(Gravity.CENTER_HORIZONTAL);
+            mTitle.setTextSize(textSize);
+            mTitle.setTextColor(setTextColor);
+
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setCustomTitle(mTitle);
             LayoutInflater inflater = mActivity.getLayoutInflater();
             View dialogLayout = inflater.inflate(R.layout.alert_dialog_with_image_view, null);
-            builder.setPositiveButton(okButtonText, null);
+
+
+          // Drawable mDrawable = new BitmapDrawable(mActivity.getResources(), bitmap);
+          // ImageView image = new ImageView(this.mActivity);
+          // image.setImageResource(mDrawable);
+            builder.setPositiveButton(okButtonText,  new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogInterface, int which) {
+                    Toast.makeText(mActivity,
+                        toastText,
+                        Toast.LENGTH_SHORT).show();
+                }
+            });
             builder.setView(dialogLayout);
-            builder.show();
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            positiveButton.setBackgroundColor(okButtonColor);
+            positiveButton.setTextColor(setTextColor);
+
         }catch (Exception e){
             result.success(e.getMessage());
         }
@@ -277,11 +382,20 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
     public void withSeekBar(MethodCall methodCall, MethodChannel.Result result) {
         //Arguments from call
         String text = ValueGetter.getString("content", methodCall);
+        int textSize = ValueGetter.getInt("textSize", methodCall);
         String okButtonText = ValueGetter.getString("okButtonText", methodCall);
+        int setTextColor = ValueGetter.getInt("setTextColor", methodCall);
+        int okButtonColor = ValueGetter.getInt("okButtonColor", methodCall);
 
         try {
+            TextView mTitle = new TextView(this.mActivity);
+            mTitle.setText(text);
+            mTitle.setGravity(Gravity.CENTER_HORIZONTAL);
+            mTitle.setTextSize(textSize);
+            mTitle.setTextColor(setTextColor);
+
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-            builder.setTitle(text); //With SeekBar
+            builder.setCustomTitle(mTitle); //With SeekBar
             final SeekBar seekBar = new SeekBar(this.mActivity);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -294,7 +408,11 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
                     Toast.makeText(mActivity, "Progress is " + seekBar.getProgress(), Toast.LENGTH_SHORT).show();
                 }
             });
-            builder.show();
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            positiveButton.setBackgroundColor(okButtonColor);
+            positiveButton.setTextColor(setTextColor);
         }catch (Exception e){
             result.success(e.getMessage());
         }
@@ -302,12 +420,21 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
     public void withRatingBar(MethodCall methodCall, MethodChannel.Result result) {
         //Arguments from call
         String text = ValueGetter.getString("content", methodCall);
+        int textSize = ValueGetter.getInt("textSize", methodCall);
         String okButtonText = ValueGetter.getString("okButtonText", methodCall);
+        int setTextColor = ValueGetter.getInt("setTextColor", methodCall);
+        int okButtonColor = ValueGetter.getInt("okButtonColor", methodCall);
 
         try {
+            TextView mTitle = new TextView(this.mActivity);
+            mTitle.setText(text);
+            mTitle.setGravity(Gravity.CENTER_HORIZONTAL);
+            mTitle.setTextSize(textSize);
+            mTitle.setTextColor(setTextColor);
+
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
             LayoutInflater inflater = mActivity.getLayoutInflater();
-            builder.setTitle(text); //With RatingBar
+            builder.setCustomTitle(mTitle); //With RatingBar
             View dialogLayout = inflater.inflate(R.layout.alert_dialog_with_rating_bar, null);
             final RatingBar ratingBar = dialogLayout.findViewById(R.id.ratingBar);
             builder.setView(dialogLayout);
@@ -317,7 +444,11 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
                     Toast.makeText(mActivity, "Rating is " + ratingBar.getRating(), Toast.LENGTH_SHORT).show();
                 }
             });
-            builder.show();
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            positiveButton.setBackgroundColor(okButtonColor);
+            positiveButton.setTextColor(setTextColor);
         }catch (Exception e){
             result.success(e.getMessage());
         }
@@ -325,9 +456,6 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
-            case "getPlatformVersion":
-                result.success("Android " + android.os.Build.VERSION.RELEASE);
-                break;
             case "showAlertDialog":
                 alertDialog(call,result);
                 break;

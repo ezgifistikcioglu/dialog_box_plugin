@@ -6,11 +6,6 @@ import 'package:flutter/services.dart';
 class DialogBox {
   static const MethodChannel _channel = const MethodChannel('dialog_box');
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-
   static Future<String> showAlertDialog(AlertDialogRequest request) async {
     final String alert =
         await _channel.invokeMethod('showAlertDialog', request.toMap());
@@ -41,8 +36,9 @@ class DialogBox {
     return withEditText;
   }
 
-  static Future<String> withImageView() async {
-    final String withImageView = await _channel.invokeMethod('withImageView');
+  static Future<String> withImageView(AlertDialogRequest request) async {
+    final String withImageView =
+        await _channel.invokeMethod('withImageView', request.toMap());
     return withImageView;
   }
 

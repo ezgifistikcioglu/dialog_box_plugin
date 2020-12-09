@@ -1,4 +1,5 @@
 import 'dart:convert' show json;
+import 'dart:typed_data';
 import 'dart:ui' show hashValues;
 
 import 'package:flutter/material.dart' show Color, Colors, required;
@@ -19,9 +20,11 @@ class AlertDialogRequest {
   Color noButtonColor;
   Color neutralButtonColor;
   Color setNeutralTextColor;
-
-  String toastText = " Please write a toast message!";
+  String toastText;
+  String noToastText;
+  String neutralToastText;
   List<String> itemList = ["Apple", "Banana", "Orange", "Grapes"];
+  Uint8List data;
 
   AlertDialogRequest({
     @required this.content,
@@ -31,7 +34,9 @@ class AlertDialogRequest {
     this.okButtonText = "Ok",
     this.noButtonText = "Cancel",
     this.neutralButtonText = "Neutral",
-    this.toastText,
+    this.toastText = " Please write a positive toast message!",
+    this.noToastText = " Please write a negative toast message!",
+    this.neutralToastText = " Please write a neutral toast message!",
     this.itemList,
     this.backgroundColor = Colors.purple,
     this.setTextColor = Colors.white,
@@ -41,6 +46,7 @@ class AlertDialogRequest {
     this.noButtonColor = Colors.orangeAccent,
     this.neutralButtonColor = Colors.deepOrange,
     this.setNeutralTextColor = Colors.yellow,
+    this.data,
   });
 
   factory AlertDialogRequest.fromJson(String str) =>
@@ -52,6 +58,7 @@ class AlertDialogRequest {
       AlertDialogRequest(
         content: json["content"] == null ? null : json["content"],
         subText: json["subText"] == null ? null : json["subText"],
+        data: json["data"] == null ? null : json["data"],
         textSize: json["textSize"] == null ? null : json["textSize"],
         messageTextSize:
             json["messageTextSize"] == null ? null : json["messageTextSize"],
@@ -63,6 +70,9 @@ class AlertDialogRequest {
             ? null
             : json["neutralButtonText"],
         toastText: json["toastText"] == null ? null : json["toastText"],
+        noToastText: json["noToastText"] == null ? null : json["noToastText"],
+        neutralToastText:
+            json["neutralToastText"] == null ? null : json["neutralToastText"],
         itemList: json["itemList"] == null ? null : json["itemList"],
         backgroundColor:
             json["backgroundColor"] == null ? null : json["backgroundColor"],
@@ -87,12 +97,15 @@ class AlertDialogRequest {
   Map<String, dynamic> toMap() => {
         'content': content,
         'subText': subText,
+        'data': data,
         'textSize': textSize,
         'messageTextSize': messageTextSize,
         'okButtonText': okButtonText,
         'noButtonText': noButtonText,
         'neutralButtonText': neutralButtonText,
         'toastText': toastText,
+        'noToastText': noToastText,
+        'neutralToastText': neutralToastText,
         'itemList': itemList,
         'backgroundColor': backgroundColor.value,
         'setTextColor': setTextColor.value,
@@ -112,10 +125,13 @@ class AlertDialogRequest {
     return o is AlertDialogRequest &&
         check.content == content &&
         check.subText == subText &&
+        check.data == data &&
         check.textSize == textSize &&
         check.okButtonText == okButtonText &&
         check.noButtonText == noButtonText &&
         check.toastText == toastText &&
+        check.noToastText == noToastText &&
+        check.neutralToastText == neutralToastText &&
         check.neutralButtonText == neutralButtonText &&
         check.itemList == itemList &&
         check.backgroundColor == backgroundColor &&
@@ -133,12 +149,15 @@ class AlertDialogRequest {
   int get hashCode => hashValues(
         content,
         subText,
+        data,
         textSize,
         setNoTextColor,
         messageTextSize,
         okButtonText,
         noButtonText,
         toastText,
+        noToastText,
+        neutralToastText,
         itemList,
         backgroundColor,
         setTextColor,

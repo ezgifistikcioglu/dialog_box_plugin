@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:dialog_box/dialog_box.dart';
 import 'package:dialog_box/request.dart';
@@ -16,28 +16,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  String rslt;
+  String result;
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  Future<void> initPlatformState() async {
-    String platformVersion;
-
-    try {
-      platformVersion = await DialogBox.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   showAlert() async {
@@ -45,13 +27,13 @@ class _MyAppState extends State<MyApp> {
     try {
       AlertDialogRequest request = AlertDialogRequest(
           content: "showAlertDialog",
-          subTextColor: Colors.red,
           subText: "Alert Dialog show a message",
+          setTextColor: Colors.pink,
           toastText: "YES was clicked",
           okButtonText: "YES");
       response = await DialogBox.showAlertDialog(request);
       setState(() {
-        rslt = response;
+        result = response;
       });
     } on PlatformException {
       response = 'Failed to get platform version.';
@@ -63,12 +45,14 @@ class _MyAppState extends State<MyApp> {
     try {
       AlertDialogRequest request = AlertDialogRequest(
           content: "Simple Alert",
+          setTextColor: Colors.yellow,
+          subTextColor: Colors.blueGrey,
           subText: "Simple Alert Dialog show a message",
           okButtonText: "K",
           toastText: "K was clicked");
       response = await DialogBox.simpleAlert(request);
       setState(() {
-        rslt = response;
+        result = response;
       });
     } on PlatformException {
       response = 'Failed to get platform version.';
@@ -86,7 +70,7 @@ class _MyAppState extends State<MyApp> {
           itemList: ["a", "b", "c"]);
       response = await DialogBox.withItems(request);
       setState(() {
-        rslt = response;
+        result = response;
       });
     } on PlatformException {
       response = 'Failed to get platform version.';
@@ -98,11 +82,12 @@ class _MyAppState extends State<MyApp> {
     try {
       AlertDialogRequest request = AlertDialogRequest(
           content: "This is list choice dialog box",
+          setTextColor: Colors.yellow,
           okButtonText: "K",
           itemList: ["a", "b", "c"]);
       response = await DialogBox.withMultiChoiceItems(request);
       setState(() {
-        rslt = response;
+        result = response;
       });
     } on PlatformException {
       response = 'Failed to get platform version.';
@@ -112,11 +97,15 @@ class _MyAppState extends State<MyApp> {
   withEditText() async {
     String response;
     try {
-      AlertDialogRequest request =
-          AlertDialogRequest(content: "With Edit Text", okButtonText: "K");
+      AlertDialogRequest request = AlertDialogRequest(
+        content: "With Edit Text",
+        okButtonText: "K",
+        setTextColor: Colors.yellow,
+        textSize: 25,
+      );
       response = await DialogBox.withEditText(request);
       setState(() {
-        rslt = response;
+        result = response;
       });
     } on PlatformException {
       response = 'Failed to get platform version.';
@@ -124,11 +113,21 @@ class _MyAppState extends State<MyApp> {
   }
 
   withImageView() async {
+    Uint8List data =
+        (await rootBundle.load('assets/test.jpg')).buffer.asUint8List();
     String response;
     try {
-      response = await DialogBox.withImageView();
+      AlertDialogRequest request = AlertDialogRequest(
+        content: "with Image View",
+        //data: data,
+        okButtonText: "ADD",
+        okButtonColor: Colors.purple,
+        setTextColor: Colors.yellow,
+        textSize: 25,
+      );
+      response = await DialogBox.withImageView(request);
       setState(() {
-        rslt = response;
+        result = response;
       });
     } on PlatformException {
       response = 'Failed to get platform version.';
@@ -138,11 +137,16 @@ class _MyAppState extends State<MyApp> {
   withSeekBar() async {
     String response;
     try {
-      AlertDialogRequest request =
-          AlertDialogRequest(content: "With SeekBar", okButtonText: "K");
+      AlertDialogRequest request = AlertDialogRequest(
+        content: "With SeekBar",
+        okButtonText: "K",
+        okButtonColor: Colors.purple,
+        setTextColor: Colors.yellow,
+        textSize: 25,
+      );
       response = await DialogBox.withSeekBar(request);
       setState(() {
-        rslt = response;
+        result = response;
       });
     } on PlatformException {
       response = 'Failed to get platform version.';
@@ -152,11 +156,15 @@ class _MyAppState extends State<MyApp> {
   withRatingBar() async {
     String response;
     try {
-      AlertDialogRequest request =
-          AlertDialogRequest(content: "With RatingBar", okButtonText: "KKK");
+      AlertDialogRequest request = AlertDialogRequest(
+          content: "With RatingBar",
+          okButtonText: "SHOW",
+          okButtonColor: Colors.purple,
+          setTextColor: Colors.yellow,
+          textSize: 25);
       response = await DialogBox.withRatingBar(request);
       setState(() {
-        rslt = response;
+        result = response;
       });
     } on PlatformException {
       response = 'Failed to get platform version.';
