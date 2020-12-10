@@ -1,5 +1,5 @@
 import 'dart:convert' show json;
-import 'dart:typed_data';
+import 'dart:typed_data' show Uint8List;
 import 'dart:ui' show hashValues;
 
 import 'package:flutter/material.dart' show Color, Colors, required;
@@ -23,8 +23,9 @@ class AlertDialogRequest {
   String toastText;
   String noToastText;
   String neutralToastText;
-  List<String> itemList = ["Apple", "Banana", "Orange", "Grapes"];
   Uint8List data;
+  String dataString;
+  List<String> itemList = ["Apple", "Banana", "Orange", "Grapes"];
 
   AlertDialogRequest({
     @required this.content,
@@ -94,28 +95,31 @@ class AlertDialogRequest {
             : json["setNeutralTextColor"],
       );
 
-  Map<String, dynamic> toMap() => {
-        'content': content,
-        'subText': subText,
-        'data': data,
-        'textSize': textSize,
-        'messageTextSize': messageTextSize,
-        'okButtonText': okButtonText,
-        'noButtonText': noButtonText,
-        'neutralButtonText': neutralButtonText,
-        'toastText': toastText,
-        'noToastText': noToastText,
-        'neutralToastText': neutralToastText,
-        'itemList': itemList,
-        'backgroundColor': backgroundColor.value,
-        'setTextColor': setTextColor.value,
-        'setNoTextColor': setNoTextColor.value,
-        'subTextColor': subTextColor.value,
-        'okButtonColor': okButtonColor.value,
-        'noButtonColor': noButtonColor.value,
-        'neutralButtonColor': neutralButtonColor.value,
-        'setNeutralTextColor': setNeutralTextColor.value,
-      };
+  Map<dynamic, dynamic> toMap() {
+    dataString = data.toString();
+    return {
+      'content': content,
+      'subText': subText,
+      'data': dataString,
+      'textSize': textSize,
+      'messageTextSize': messageTextSize,
+      'okButtonText': okButtonText,
+      'noButtonText': noButtonText,
+      'neutralButtonText': neutralButtonText,
+      'toastText': toastText,
+      'noToastText': noToastText,
+      'neutralToastText': neutralToastText,
+      'itemList': itemList,
+      'backgroundColor': backgroundColor.value,
+      'setTextColor': setTextColor.value,
+      'setNoTextColor': setNoTextColor.value,
+      'subTextColor': subTextColor.value,
+      'okButtonColor': okButtonColor.value,
+      'noButtonColor': noButtonColor.value,
+      'neutralButtonColor': neutralButtonColor.value,
+      'setNeutralTextColor': setNeutralTextColor.value,
+    };
+  }
 
   @override
   bool operator ==(Object o) {
@@ -142,7 +146,8 @@ class AlertDialogRequest {
         check.setNoTextColor == setNoTextColor &&
         check.noButtonColor == noButtonColor &&
         check.neutralButtonColor == neutralButtonColor &&
-        check.setNeutralTextColor == setNeutralTextColor;
+        check.setNeutralTextColor == setNeutralTextColor &&
+        check.dataString == dataString;
   }
 
   @override

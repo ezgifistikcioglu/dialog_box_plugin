@@ -119,7 +119,7 @@ class _MyAppState extends State<MyApp> {
     try {
       AlertDialogRequest request = AlertDialogRequest(
         content: "with Image View",
-        //data: data,
+        data: data,
         okButtonText: "ADD",
         okButtonColor: Colors.purple,
         setTextColor: Colors.yellow,

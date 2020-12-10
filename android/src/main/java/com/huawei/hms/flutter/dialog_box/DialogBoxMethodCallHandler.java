@@ -3,9 +3,12 @@ package com.huawei.hms.flutter.dialog_box;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -18,9 +21,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +36,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -341,7 +347,7 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
         int textSize = ValueGetter.getInt("textSize", methodCall);
         final String toastText = ValueGetter.getString("toastText", methodCall);
         int okButtonColor = ValueGetter.getInt("okButtonColor", methodCall);
-      //  Bitmap bitmap = ValueGetter.bitmapForDecoders(methodCall);
+          Bitmap bitmap = ValueGetter.bitmapForDecoders(methodCall);
 
         try {
             TextView mTitle = new TextView(this.mActivity);
@@ -352,13 +358,13 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
 
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
             builder.setCustomTitle(mTitle);
+
             LayoutInflater inflater = mActivity.getLayoutInflater();
             View dialogLayout = inflater.inflate(R.layout.alert_dialog_with_image_view, null);
 
+            final ImageView qrCodeImageView = (ImageView) dialogLayout.findViewById(R.id.imageView);
+            qrCodeImageView.setImageBitmap(bitmap);
 
-          // Drawable mDrawable = new BitmapDrawable(mActivity.getResources(), bitmap);
-          // ImageView image = new ImageView(this.mActivity);
-          // image.setImageResource(mDrawable);
             builder.setPositiveButton(okButtonText,  new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogInterface, int which) {
                     Toast.makeText(mActivity,
