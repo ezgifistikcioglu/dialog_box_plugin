@@ -8,6 +8,8 @@ class AlertDialogRequest {
   String content;
   String subText;
   int textSize;
+  int iconWidth;
+  int iconHeight;
   int messageTextSize;
   String okButtonText;
   String noButtonText;
@@ -31,6 +33,8 @@ class AlertDialogRequest {
     @required this.content,
     this.subText,
     this.textSize = 20,
+    this.iconWidth,
+    this.iconHeight,
     this.messageTextSize = 17,
     this.okButtonText = "Ok",
     this.noButtonText = "Cancel",
@@ -61,6 +65,8 @@ class AlertDialogRequest {
         subText: json["subText"] == null ? null : json["subText"],
         data: json["data"] == null ? null : json["data"],
         textSize: json["textSize"] == null ? null : json["textSize"],
+        iconWidth: json["iconWidth"] == null ? null : json["iconWidth"],
+        iconHeight: json["iconHeight"] == null ? null : json["iconHeight"],
         messageTextSize:
             json["messageTextSize"] == null ? null : json["messageTextSize"],
         okButtonText:
@@ -102,6 +108,8 @@ class AlertDialogRequest {
       'subText': subText,
       'data': dataString,
       'textSize': textSize,
+      'iconWidth': iconWidth,
+      'iconHeight': iconHeight,
       'messageTextSize': messageTextSize,
       'okButtonText': okButtonText,
       'noButtonText': noButtonText,
@@ -131,6 +139,8 @@ class AlertDialogRequest {
         check.subText == subText &&
         check.data == data &&
         check.textSize == textSize &&
+        check.iconWidth == iconWidth &&
+        check.iconHeight == iconHeight &&
         check.okButtonText == okButtonText &&
         check.noButtonText == noButtonText &&
         check.toastText == toastText &&

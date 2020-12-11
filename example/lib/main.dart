@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:dialog_box/dialog_box.dart';
+import 'package:dialog_box/dialogBox.dart';
 import 'package:dialog_box/request.dart';
 import 'package:dialog_box_example/CustomButton.dart';
 import 'package:flutter/material.dart';
@@ -60,10 +60,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   withItems() async {
+    Uint8List data =
+        (await rootBundle.load('assets/clipboard.png')).buffer.asUint8List();
     String response;
     try {
       AlertDialogRequest request = AlertDialogRequest(
           content: "with Items Alert",
+          data: data,
+          iconHeight: 100,
+          iconWidth: 100,
           okButtonText: "K",
           noButtonText: "Dot",
           toastText: "YES was clicked",

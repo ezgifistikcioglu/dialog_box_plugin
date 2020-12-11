@@ -41,5 +41,7 @@ flutter:
 
   assets:
     - assets/test.jpg
+    - assets/list.png
+    - assets/clipboard.png
 
 

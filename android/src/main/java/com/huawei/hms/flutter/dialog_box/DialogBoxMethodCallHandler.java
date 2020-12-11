@@ -10,8 +10,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +21,8 @@ import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -31,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -176,7 +181,11 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
         int setTextColor = ValueGetter.getInt("setTextColor", methodCall);
         int setNoTextColor = ValueGetter.getInt("setNoTextColor", methodCall);
         int setNeutralTextColor = ValueGetter.getInt("setNeutralTextColor", methodCall);
+        int iconWidth = ValueGetter.getInt("iconWidth", methodCall);
+        int iconHeight = ValueGetter.getInt("iconHeight", methodCall);
         ArrayList<String> itemList = methodCall.argument("itemList");
+        Bitmap bitmapFirst = ValueGetter.bitmapForDecoders(methodCall);
+
 
         try {
             //List<String> to String[]
@@ -188,7 +197,6 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
             AlertDialog.Builder builder = new AlertDialog.Builder(this.mActivity);
             final String[] finalItemListStringArray = itemListStringArray;
             builder.setTitle(text) //"List of Items"
-
                 .setItems(itemListStringArray, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         assert finalItemListStringArray != null;
@@ -215,12 +223,12 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
                         Toast.LENGTH_SHORT).show();
                 }
             });
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                builder.setIcon(mActivity.getResources().getDrawable(android.R.drawable.ic_menu_call, mActivity.getTheme()));
-                builder.setIcon(mActivity.getResources().getDrawable(R.drawable.list, mActivity.getTheme()));
-            }
-            AlertDialog alertDialog = builder.create();
+            Bitmap bitmap = Bitmap.createScaledBitmap(bitmapFirst, iconWidth,iconHeight, true);
+            Drawable drawable = new BitmapDrawable(mActivity.getResources(), bitmap);
 
+            builder.setIcon(drawable);
+
+            AlertDialog alertDialog = builder.create();
             alertDialog.show();
 
             Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -348,6 +356,7 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
         final String toastText = ValueGetter.getString("toastText", methodCall);
         int okButtonColor = ValueGetter.getInt("okButtonColor", methodCall);
           Bitmap bitmap = ValueGetter.bitmapForDecoders(methodCall);
+
 
         try {
             TextView mTitle = new TextView(this.mActivity);
