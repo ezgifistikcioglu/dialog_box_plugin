@@ -6,15 +6,16 @@ import 'package:flutter/services.dart';
 class DialogBox {
   static const MethodChannel _channel = const MethodChannel('dialog_box');
 
-  static Future<String> showAlertDialog(AlertDialogRequest request) async {
+  static Future<String> withPositiveButton(AlertDialogRequest request) async {
     final String alert =
-        await _channel.invokeMethod('showAlertDialog', request.toMap());
+        await _channel.invokeMethod('withPositiveButton', request.toMap());
     return alert;
   }
 
-  static Future<String> simpleAlert(AlertDialogRequest request) async {
-    final String simpleAlert =
-        await _channel.invokeMethod('simpleAlertWithCancel', request.toMap());
+  static Future<String> withPositiveAndNegativeButton(
+      AlertDialogRequest request) async {
+    final String simpleAlert = await _channel.invokeMethod(
+        'withPositiveAndNegativeButton', request.toMap());
     return simpleAlert;
   }
 

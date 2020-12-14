@@ -2,7 +2,8 @@ import 'dart:typed_data';
 
 import 'package:dialog_box/dialogBox.dart';
 import 'package:dialog_box/request.dart';
-import 'package:dialog_box_example/CustomButton.dart';
+import 'package:dialog_box/utils/Gravity.dart';
+import 'package:dialog_box_example/view/CustomButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -22,16 +23,17 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  showAlert() async {
+  withPositiveButton() async {
     String response;
     try {
       AlertDialogRequest request = AlertDialogRequest(
-          content: "showAlertDialog",
+          content: "With Positive Button",
           subText: "Alert Dialog show a message",
-          setTextColor: Colors.pink,
+          gravity: Gravity.Center,
+          okButtonTextColor: Colors.green,
           toastText: "YES was clicked",
           okButtonText: "YES");
-      response = await DialogBox.showAlertDialog(request);
+      response = await DialogBox.withPositiveButton(request);
       setState(() {
         result = response;
       });
@@ -40,17 +42,16 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  simpleAlert() async {
+  withPositiveAndNegativeButton() async {
     String response;
     try {
       AlertDialogRequest request = AlertDialogRequest(
-          content: "Simple Alert",
-          setTextColor: Colors.yellow,
-          subTextColor: Colors.blueGrey,
+          content: "With Positive And Negative Button",
+          setTextColor: Colors.green,
           subText: "Simple Alert Dialog show a message",
-          okButtonText: "K",
-          toastText: "K was clicked");
-      response = await DialogBox.simpleAlert(request);
+          okButtonText: "OK",
+          toastText: "OK was clicked");
+      response = await DialogBox.withPositiveAndNegativeButton(request);
       setState(() {
         result = response;
       });
@@ -69,9 +70,9 @@ class _MyAppState extends State<MyApp> {
           data: data,
           iconHeight: 100,
           iconWidth: 100,
-          okButtonText: "K",
-          noButtonText: "Dot",
-          toastText: "YES was clicked",
+          okButtonText: "OK",
+          noButtonText: "NO",
+          toastText: "OK was clicked",
           itemList: ["a", "b", "c"]);
       response = await DialogBox.withItems(request);
       setState(() {
@@ -88,7 +89,8 @@ class _MyAppState extends State<MyApp> {
       AlertDialogRequest request = AlertDialogRequest(
           content: "This is list choice dialog box",
           setTextColor: Colors.yellow,
-          okButtonText: "K",
+          okButtonText: "OK",
+          gravity: Gravity.Center,
           itemList: ["a", "b", "c"]);
       response = await DialogBox.withMultiChoiceItems(request);
       setState(() {
@@ -104,7 +106,8 @@ class _MyAppState extends State<MyApp> {
     try {
       AlertDialogRequest request = AlertDialogRequest(
         content: "With Edit Text",
-        okButtonText: "K",
+        okButtonText: "OK",
+        gravity: Gravity.Center,
         setTextColor: Colors.yellow,
         textSize: 25,
       );
@@ -125,9 +128,8 @@ class _MyAppState extends State<MyApp> {
       AlertDialogRequest request = AlertDialogRequest(
         content: "with Image View",
         data: data,
+        gravity: Gravity.Center,
         okButtonText: "ADD",
-        okButtonColor: Colors.purple,
-        setTextColor: Colors.yellow,
         textSize: 25,
       );
       response = await DialogBox.withImageView(request);
@@ -144,9 +146,8 @@ class _MyAppState extends State<MyApp> {
     try {
       AlertDialogRequest request = AlertDialogRequest(
         content: "With SeekBar",
-        okButtonText: "K",
-        okButtonColor: Colors.purple,
-        setTextColor: Colors.yellow,
+        gravity: Gravity.CenterHorizontal,
+        okButtonText: "OK",
         textSize: 25,
       );
       response = await DialogBox.withSeekBar(request);
@@ -164,8 +165,7 @@ class _MyAppState extends State<MyApp> {
       AlertDialogRequest request = AlertDialogRequest(
           content: "With RatingBar",
           okButtonText: "SHOW",
-          okButtonColor: Colors.purple,
-          setTextColor: Colors.yellow,
+          gravity: Gravity.CenterHorizontal,
           textSize: 25);
       response = await DialogBox.withRatingBar(request);
       setState(() {
@@ -192,8 +192,11 @@ class _MyAppState extends State<MyApp> {
                 SizedBox(
                   height: 12.0,
                 ),
-                CustomButton(text: "Show Alert Dialog", onPressed: showAlert),
-                CustomButton(text: "Show simpleAlert", onPressed: simpleAlert),
+                CustomButton(
+                    text: "Show Alert Dialog", onPressed: withPositiveButton),
+                CustomButton(
+                    text: "Show simpleAlert",
+                    onPressed: withPositiveAndNegativeButton),
                 CustomButton(
                   text: "Show withItems",
                   onPressed: withItems,

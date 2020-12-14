@@ -2,15 +2,16 @@ import 'dart:convert' show json;
 import 'dart:typed_data' show Uint8List;
 import 'dart:ui' show hashValues;
 
+import 'package:dialog_box/utils/Gravity.dart';
 import 'package:flutter/material.dart' show Color, Colors, required;
 
 class AlertDialogRequest {
   String content;
   String subText;
-  int textSize;
-  int iconWidth;
-  int iconHeight;
-  int messageTextSize;
+  String toastText;
+  String noToastText;
+  String neutralToastText;
+  String dataString;
   String okButtonText;
   String noButtonText;
   String neutralButtonText;
@@ -19,14 +20,18 @@ class AlertDialogRequest {
   Color setNoTextColor;
   Color subTextColor;
   Color okButtonColor;
+  Color okButtonTextColor;
+  Color noButtonTextColor;
+  Color neutralButtonTextColor;
   Color noButtonColor;
   Color neutralButtonColor;
   Color setNeutralTextColor;
-  String toastText;
-  String noToastText;
-  String neutralToastText;
+  int textSize;
+  int iconWidth;
+  int iconHeight;
+  int gravity;
+  int messageTextSize;
   Uint8List data;
-  String dataString;
   List<String> itemList = ["Apple", "Banana", "Orange", "Grapes"];
 
   AlertDialogRequest({
@@ -35,6 +40,7 @@ class AlertDialogRequest {
     this.textSize = 20,
     this.iconWidth,
     this.iconHeight,
+    this.gravity = Gravity.NoGravity,
     this.messageTextSize = 17,
     this.okButtonText = "Ok",
     this.noButtonText = "Cancel",
@@ -44,12 +50,15 @@ class AlertDialogRequest {
     this.neutralToastText = " Please write a neutral toast message!",
     this.itemList,
     this.backgroundColor = Colors.purple,
-    this.setTextColor = Colors.white,
+    this.setTextColor = Colors.green,
     this.setNoTextColor = Colors.pink,
     this.subTextColor = Colors.white,
-    this.okButtonColor = Colors.blue,
-    this.noButtonColor = Colors.orangeAccent,
-    this.neutralButtonColor = Colors.deepOrange,
+    this.okButtonColor = Colors.black,
+    this.noButtonTextColor = Colors.red,
+    this.okButtonTextColor = Colors.green,
+    this.neutralButtonTextColor = Colors.black,
+    this.noButtonColor = Colors.white,
+    this.neutralButtonColor = Colors.yellow,
     this.setNeutralTextColor = Colors.yellow,
     this.data,
   });
@@ -67,6 +76,7 @@ class AlertDialogRequest {
         textSize: json["textSize"] == null ? null : json["textSize"],
         iconWidth: json["iconWidth"] == null ? null : json["iconWidth"],
         iconHeight: json["iconHeight"] == null ? null : json["iconHeight"],
+        gravity: json["gravity"] == null ? null : json["gravity"],
         messageTextSize:
             json["messageTextSize"] == null ? null : json["messageTextSize"],
         okButtonText:
@@ -91,6 +101,15 @@ class AlertDialogRequest {
             json["subTextColor"] == null ? null : json["subTextColor"],
         okButtonColor:
             json["okButtonColor"] == null ? null : json["okButtonColor"],
+        okButtonTextColor: json["okButtonTextColor"] == null
+            ? null
+            : json["okButtonTextColor"],
+        neutralButtonTextColor: json["neutralButtonTextColor"] == null
+            ? null
+            : json["neutralButtonTextColor"],
+        noButtonTextColor: json["noButtonTextColor"] == null
+            ? null
+            : json["noButtonTextColor"],
         noButtonColor:
             json["noButtonColor"] == null ? null : json["noButtonColor"],
         neutralButtonColor: json["neutralButtonColor"] == null
@@ -110,6 +129,7 @@ class AlertDialogRequest {
       'textSize': textSize,
       'iconWidth': iconWidth,
       'iconHeight': iconHeight,
+      'gravity': gravity,
       'messageTextSize': messageTextSize,
       'okButtonText': okButtonText,
       'noButtonText': noButtonText,
@@ -123,8 +143,11 @@ class AlertDialogRequest {
       'setNoTextColor': setNoTextColor.value,
       'subTextColor': subTextColor.value,
       'okButtonColor': okButtonColor.value,
+      'okButtonTextColor': okButtonTextColor.value,
+      'noButtonTextColor': noButtonTextColor.value,
       'noButtonColor': noButtonColor.value,
       'neutralButtonColor': neutralButtonColor.value,
+      'neutralButtonTextColor': neutralButtonTextColor.value,
       'setNeutralTextColor': setNeutralTextColor.value,
     };
   }
@@ -141,6 +164,7 @@ class AlertDialogRequest {
         check.textSize == textSize &&
         check.iconWidth == iconWidth &&
         check.iconHeight == iconHeight &&
+        check.gravity == gravity &&
         check.okButtonText == okButtonText &&
         check.noButtonText == noButtonText &&
         check.toastText == toastText &&
@@ -153,9 +177,12 @@ class AlertDialogRequest {
         check.subTextColor == subTextColor &&
         check.messageTextSize == messageTextSize &&
         check.okButtonColor == okButtonColor &&
+        check.okButtonTextColor == okButtonTextColor &&
+        check.noButtonTextColor == noButtonTextColor &&
         check.setNoTextColor == setNoTextColor &&
         check.noButtonColor == noButtonColor &&
         check.neutralButtonColor == neutralButtonColor &&
+        check.neutralButtonTextColor == neutralButtonTextColor &&
         check.setNeutralTextColor == setNeutralTextColor &&
         check.dataString == dataString;
   }
