@@ -28,7 +28,7 @@ import io.flutter.plugin.common.PluginRegistry;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandler, PluginRegistry.ActivityResultListener {
+public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandler {
     private Activity mActivity;
 
     public DialogBoxMethodCallHandler(final Activity activity){
@@ -499,11 +499,6 @@ public class DialogBoxMethodCallHandler implements MethodChannel.MethodCallHandl
                 result.notImplemented();
                 break;
         }
-    }
-
-    @Override
-    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        return false;
     }
 
 }

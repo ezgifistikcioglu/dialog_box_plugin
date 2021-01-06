@@ -53,7 +53,6 @@ public class DialogBoxPlugin implements FlutterPlugin, ActivityAware {
   public static void registerWith(PluginRegistry.Registrar registrar) {
     final DialogBoxPlugin instance = new DialogBoxPlugin();
     instance.onAttachedToEngine(registrar.messenger(), registrar.activity());
-    registrar.addActivityResultListener(instance.mDialogBoxMethodCallHandler);
   }
 
   private void onAttachedToEngine(@NonNull BinaryMessenger messenger, Activity activity) {
@@ -81,7 +80,6 @@ public class DialogBoxPlugin implements FlutterPlugin, ActivityAware {
   public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
     if (flutterPluginBinding != null) {
       onAttachedToEngine(flutterPluginBinding.getBinaryMessenger(),binding.getActivity());
-      binding.addActivityResultListener(mDialogBoxMethodCallHandler);
     }
   }
 
